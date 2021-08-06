@@ -1,7 +1,6 @@
 // exception-based assert
 
-#ifndef EXCEPTION_ASSERT_8557848_H
-#define EXCEPTION_ASSERT_8557848_H
+#pragma once
 
 //local headers
 
@@ -19,7 +18,3 @@ void exception_assert(std::string expr, std::string func, std::string file, int 
 
 #define EXCEPTION_ASSERT_MSG(expression, msg) { if (!(expression)) exception_assert(#expression, __func__, __FILE__, __LINE__, msg);}
 #define EXCEPTION_ASSERT(expression) EXCEPTION_ASSERT_MSG(expression, "")
-
-
-
-#endif //header guard

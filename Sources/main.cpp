@@ -1,9 +1,14 @@
+// main
 
-#include <cstdint>
-#include <iostream>
-
+//local headers
 #include "math.h"
 #include "test.h"
+
+//third party headers
+
+//standard headers
+#include <cstdint>
+#include <iostream>
 
 
 void get_numerical_limits()
@@ -31,7 +36,7 @@ void get_numerical_limits()
 	std::uint32_t n4{0};
 	while (binomial_coefficient_integral_slow(n4, n4/2) != 0)
 		++n4;
-	std::cout << "binomial_coefficient_integral_slow -> max n = " << n4 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral_slow(n,k) -> max n = " << n4 - 1 << '\n';
 }
 
 int main()

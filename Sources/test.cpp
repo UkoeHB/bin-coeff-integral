@@ -1,9 +1,15 @@
-#include <cstdint>
-#include <iostream>
+// tests
 
+//local headers
 #include "exception_assert.h"
 #include "math.h"
 #include "test.h"
+
+//third party headers
+
+//standard headers
+#include <cstdint>
+#include <iostream>
 
 
 void test_sqrt_integral()

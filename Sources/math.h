@@ -1,5 +1,12 @@
+// math functions
+
 #pragma once
 
+//local headers
+
+//third party headers
+
+//standard headers
 #include <cstdint>
 #include <list>
 #include <type_traits>
@@ -9,6 +16,7 @@ template <typename T>
 T sqrt_integral(T n)
 {
 	// returns closest integer <= sqrt(n)
+	// error: returns 0
 
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
@@ -37,6 +45,9 @@ std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t 
 template<typename T>
 T factorial(T n, T s = 0)
 {
+	// obtains factorial: n! / s!
+	// error: returns 0
+
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	if (s > n || n < 0 || s < 0)
@@ -60,9 +71,11 @@ T factorial(T n, T s = 0)
 template<typename T>
 T binomial_coefficient_integral_fast(T n, T k)
 {
+	// n choose k = n! / (k! * (n - k)!)
+	// error: returns 0
+
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
-	// n choose k = n! / (k! * (n - k)!)
 	if (n < 0 || k < 0 || n < k)
 		return 0;
 	else if (n == k)

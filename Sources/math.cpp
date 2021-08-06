@@ -1,9 +1,14 @@
+// math functions
+
+//local headers
+#include "math.h"
+
+//third party headers
+
+//standard headers
 #include <cstdint>
 #include <list>
 #include <limits>
-
-#include "math.h"
-
 
 std::list<std::uint32_t> prime_factors(std::uint32_t n)
 {
@@ -54,7 +59,7 @@ std::list<std::uint32_t> prime_factors(std::uint32_t n)
 std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t k)
 {
 	// n choose k = n! / (k! * (n - k)!)
-	// error cases (return 0)
+	// error: return 0
 	// - n < 0, k < 0, n < k
 	// - result overflows T::max()
 

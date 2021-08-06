@@ -1,6 +1,6 @@
 # README
 
-Study methods of computing binomial coefficients on integrals.
+Study methods of computing binomial coefficients for C++ integral types.
 
 
 To run:

@@ -1,3 +1,6 @@
+######################################
+#create executable
+
 set(MAIN_SOURCES
 	main.cpp
 	test.cpp
