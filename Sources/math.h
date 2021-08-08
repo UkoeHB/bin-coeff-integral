@@ -6,11 +6,9 @@
 #include "is_multiprecision_int.h"
 
 //third party headers
-#include "boost/type_traits/is_integral.hpp"
 
 //standard headers
 #include <cstdint>
-#include <iostream>
 #include <list>
 #include <type_traits>
 #include <vector>

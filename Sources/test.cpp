@@ -6,6 +6,7 @@
 #include "test.h"
 
 //third party headers
+#include "boost/multiprecision/cpp_int.hpp"
 
 //standard headers
 #include <cstdint>
@@ -213,8 +214,30 @@ void test_binomial_coefficient_integral3()
 	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,9) == 10, "test failed");
 	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,10) == 1, "test failed");
 
-	// numerical limits exceeded
-	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint16_t>(200,100) == 0, "test failed");
+	// numerical limits
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint16_t>(18,9) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint16_t>(19,9) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint32_t>(34,17) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint32_t>(35,17) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint64_t>(67,33) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint64_t>(68,34) == 0, "test failed");
+
+	using boost::multiprecision::uint128_t;
+	using boost::multiprecision::uint256_t;
+	using boost::multiprecision::uint512_t;
+	uint128_t a1 = binomial_coefficient_integral3_impl<uint128_t>(131, 65, std::numeric_limits<uint128_t>::max(), 128/8);
+	uint128_t a2 = binomial_coefficient_integral3_impl<uint128_t>(132, 66, std::numeric_limits<uint128_t>::max(), 128/8);
+	uint256_t b1 = binomial_coefficient_integral3_impl<uint256_t>(260, 130, std::numeric_limits<uint256_t>::max(), 256/8);
+	uint256_t b2 = binomial_coefficient_integral3_impl<uint256_t>(261, 130, std::numeric_limits<uint256_t>::max(), 256/8);
+	uint512_t c1 = binomial_coefficient_integral3_impl<uint512_t>(516, 258, std::numeric_limits<uint512_t>::max(), 512/8);
+	uint512_t c2 = binomial_coefficient_integral3_impl<uint512_t>(517, 258, std::numeric_limits<uint512_t>::max(), 512/8);
+
+	EXCEPTION_ASSERT_MSG(a1 != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(a2 == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(b1 != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(b2 == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(c1 != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(c2 == 0, "test failed");
 }
 
 void run_tests()

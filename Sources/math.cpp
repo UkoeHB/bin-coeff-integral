@@ -15,7 +15,6 @@ std::size_t bin_coeff_get_max_k(std::size_t size)
 {
 	// what is the largest value of (n/2) such that
 	// n choose (n/2) will fit in an integral T{} without overflow?
-	//static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	// note: results found by incrementing n until failure
 	switch (size)
@@ -31,7 +30,7 @@ std::size_t bin_coeff_get_max_k(std::size_t size)
 		case 16:
 			return 131/2;
 		case 32:
-			return 262/2;
+			return 260/2;
 		case 64:
 			return 516/2;
 		case 128:

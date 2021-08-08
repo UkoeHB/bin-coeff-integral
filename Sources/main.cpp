@@ -78,12 +78,12 @@ void get_numerical_limits()
 	std::cout << "binomial_coefficient_integral3<std::uint64_t>(n,k) -> max n = " << n10 - 1 << '\n';
 
 	// boost::cpp_int
-	using boost::multiprecision::uint512_t;
-	uint512_t limit = (uint512_t{1} << 512) - 1;
-	uint512_t n11{0};
-	while (binomial_coefficient_integral3_impl<uint512_t>(n11, n11/uint512_t{2}, limit, 512/8) != 0)
+	using boost::multiprecision::uint256_t;
+	uint256_t limit = (uint256_t{1} << 256) - 1;
+	uint256_t n11{0};
+	while (binomial_coefficient_integral3_impl<uint256_t>(n11, n11/uint256_t{2}, limit, 256/8) != 0)
 		++n11;
-	std::cout << "binomial_coefficient_integral3<uint512_t>(n,k,2^512) -> max n = " << n11 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral3<boost::multiprecision::uint256_t>(n,k,2^256) -> max n = " << n11 - 1 << '\n';
 }
 
 int main()

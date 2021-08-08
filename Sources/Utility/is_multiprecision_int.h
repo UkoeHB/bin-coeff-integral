@@ -1,4 +1,4 @@
-// is_multiprecision_int<T> type trait
+// is_multiprecision_int<T> type trait for detecting boost::multiprecision integers
 // adapted from: https://stackoverflow.com/questions/61623438/type-trait-for-boost-multiprecision-integers
 
 #pragma once
