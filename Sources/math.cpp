@@ -39,7 +39,7 @@ std::vector<std::uint16_t> get_primes(std::uint16_t n)
  	return result;
 }
 
-std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t k)
+std::uint32_t binomial_coefficient_integral1(std::uint32_t n, std::uint32_t k)
 {
 	// n choose k = n! / (k! * (n - k)!)
 	// error: return 0

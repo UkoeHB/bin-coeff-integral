@@ -13,30 +13,30 @@
 
 void get_numerical_limits()
 {
-	// find numerical limits of binomial_coefficient_integral_fast for different types
+	// find numerical limits of binomial_coefficient_integral0 for different types
 	// std::uint16_t
 	std::uint16_t n1{0};
-	while (binomial_coefficient_integral_fast<std::uint16_t>(n1, n1/2) != 0)
+	while (binomial_coefficient_integral0<std::uint16_t>(n1, n1/2) != 0)
 		++n1;
-	std::cout << "binomial_coefficient_integral_fast<std::uint16_t>(n,k) -> max n = " << n1 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral0<std::uint16_t>(n,k) -> max n = " << n1 - 1 << '\n';
 
 	// std::uint32_t
 	std::uint32_t n2{0};
-	while (binomial_coefficient_integral_fast<std::uint32_t>(n2, n2/2) != 0)
+	while (binomial_coefficient_integral0<std::uint32_t>(n2, n2/2) != 0)
 		++n2;
-	std::cout << "binomial_coefficient_integral_fast<std::uint32_t>(n,k) -> max n = " << n2 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral0<std::uint32_t>(n,k) -> max n = " << n2 - 1 << '\n';
 
 	// std::uint64_t
 	std::uint64_t n3{0};
-	while (binomial_coefficient_integral_fast<std::uint64_t>(n3, n3/2) != 0)
+	while (binomial_coefficient_integral0<std::uint64_t>(n3, n3/2) != 0)
 		++n3;
-	std::cout << "binomial_coefficient_integral_fast<std::uint64_t>(n,k) -> max n = " << n3 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral0<std::uint64_t>(n,k) -> max n = " << n3 - 1 << '\n';
 
-	// find numerical limits of binomial_coefficient_integral_slow
+	// find numerical limits of binomial_coefficient_integral1
 	std::uint32_t n4{0};
-	while (binomial_coefficient_integral_slow(n4, n4/2) != 0)
+	while (binomial_coefficient_integral1(n4, n4/2) != 0)
 		++n4;
-	std::cout << "binomial_coefficient_integral_slow(n,k) -> max n = " << n4 - 1 << '\n';
+	std::cout << "binomial_coefficient_integral1(n,k) -> max n = " << n4 - 1 << '\n';
 
 	// find numerical limits of binomial_coefficient_integral2 for different types
 	// std::uint16_t

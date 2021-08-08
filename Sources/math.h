@@ -14,13 +14,14 @@
 
 
 std::vector<std::uint16_t> get_primes(std::uint16_t n);
-std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t k);
+std::uint32_t binomial_coefficient_integral1(std::uint32_t n, std::uint32_t k);
 
 template <typename T>
 T bin_coeff_get_max_k()
 {
 	// what is the largest value of (n/2) such that
-	// n choose (n/2) will fit in a variable T{}?
+	// n choose (n/2) will fit in an integral T{} without overflow?
+	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	// note: results based on a generic online calculator
 	// https://www.hackmath.net/en/calculator/n-choose-k?n=132&k=66&order=0&repeat=0
@@ -41,14 +42,16 @@ T bin_coeff_get_max_k()
 		break;
 	};
 
-	// unknown size
-	return 0;
+	// unknown size, approximate the answer
+	return ((140*sizeof(T{})) / 32);
 }
 
 // thanks to: https://solarianprogrammer.com/2019/10/25/cpp-17-find-gcd-of-two-or-more-integers/
 template <typename T>
 T gcd(T a, T b)
 {
+	static_assert(std::is_integral<T>::value, "Integral type required.");
+
 	// Use the fact that gcd(a, b) = gcd(|a|, |b|)
 	// to cover both positive and negative integers
 	if (a < 0)
@@ -88,7 +91,6 @@ T sqrt_integral(T n)
 {
 	// returns closest integer <= sqrt(n)
 	// error: returns 0
-
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	// assess input
@@ -116,6 +118,8 @@ std::list<T> prime_factors(T n)
 	// returns prime factors of input
 	// note: does not return '1' as a prime factor
 	// warning: worst-case performance if sizeof(T{}) > 4 can be catastrophic
+	static_assert(std::is_integral<T>::value, "Integral type required.");
+
 	std::list<T> result;
 
 	// assess input
@@ -159,7 +163,6 @@ T factorial(T n, T s = 0)
 {
 	// obtains factorial: n! / s!
 	// error: returns 0
-
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	if (s > n || n < 0 || s < 0)
@@ -181,11 +184,10 @@ T factorial(T n, T s = 0)
 }
 
 template<typename T>
-T binomial_coefficient_integral_fast(T n, T k)
+T binomial_coefficient_integral0(T n, T k)
 {
 	// n choose k = n! / (k! * (n - k)!)
 	// error: returns 0
-
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	if (n < 0 || k < 0 || n < k)
