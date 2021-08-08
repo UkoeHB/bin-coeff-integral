@@ -3,11 +3,14 @@
 #pragma once
 
 //local headers
+#include "is_multiprecision_int.h"
 
 //third party headers
+#include "boost/type_traits/is_integral.hpp"
 
 //standard headers
 #include <cstdint>
+#include <iostream>
 #include <list>
 #include <type_traits>
 #include <vector>
@@ -15,42 +18,13 @@
 
 std::vector<std::uint16_t> get_primes(std::uint16_t n);
 std::uint32_t binomial_coefficient_integral1(std::uint32_t n, std::uint32_t k);
-
-template <typename T>
-std::size_t bin_coeff_get_max_k()
-{
-	// what is the largest value of (n/2) such that
-	// n choose (n/2) will fit in an integral T{} without overflow?
-	static_assert(std::is_integral<T>::value, "Integral type required.");
-
-	// note: results based on a generic online calculator
-	// https://www.hackmath.net/en/calculator/n-choose-k
-	switch (sizeof(T{}))
-	{
-		case 1:
-			return 10/2;
-		case 2:
-			return 18/2;
-		case 4:
-			return 34/2;
-		case 8:
-			return 67/2;
-		case 16:
-			return 131/2;
-		case 32:
-			return 262/2;
-		break;
-	};
-
-	// unknown size, approximate the answer
-	return ((140*sizeof(T{})) / 32);
-}
+std::size_t bin_coeff_get_max_k(std::size_t size);
 
 // thanks to: https://solarianprogrammer.com/2019/10/25/cpp-17-find-gcd-of-two-or-more-integers/
 template <typename T>
 T gcd(T a, T b)
 {
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	// Use the fact that gcd(a, b) = gcd(|a|, |b|)
 	// to cover both positive and negative integers
@@ -91,7 +65,7 @@ T sqrt_integral(T n)
 {
 	// returns closest integer <= sqrt(n)
 	// error: returns 0
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	// assess input
 	if (n <= 0)
@@ -118,7 +92,7 @@ std::list<T> prime_factors(T n)
 	// returns prime factors of input
 	// note: does not return '1' as a prime factor
 	// warning: worst-case performance if sizeof(T{}) > 4 can be catastrophic
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	std::list<T> result;
 
@@ -163,7 +137,7 @@ T factorial(T n, T s = 0)
 {
 	// obtains factorial: n! / s!
 	// error: returns 0
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	if (s > n || n < 0 || s < 0)
 		return 0;
@@ -188,7 +162,7 @@ T binomial_coefficient_integral0(T n, T k)
 {
 	// n choose k = n! / (k! * (n - k)!)
 	// error: returns 0
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	if (n < 0 || k < 0 || n < k)
 		return 0;
@@ -221,7 +195,7 @@ T binomial_coefficient_integral2(T n, T k)
 	// error: return 0
 	// - n < 0, k < 0, n < k
 	// - result overflows T::max()
-	static_assert(std::is_integral<T>::value, "Integral type required.");
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 	constexpr T max{std::numeric_limits<T>::max()};
 
 	// input validation
@@ -330,14 +304,13 @@ T binomial_coefficient_integral2(T n, T k)
 }
 
 template<typename T>
-T binomial_coefficient_integral3(T n, T k)
+T binomial_coefficient_integral3_impl(const T n, const T k, const T max, const std::size_t size)
 {
 	// n choose k = n! / [k! * (n - k)!]
 	// error: return 0
 	// - n < 0, k < 0, n < k
 	// - result overflows T::max()
-	static_assert(std::is_integral<T>::value, "Integral type required.");
-	constexpr T max{std::numeric_limits<T>::max()};
+	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	// input validation
 	if (n < 0 || k < 0 || n < k)
@@ -370,14 +343,14 @@ T binomial_coefficient_integral3(T n, T k)
 	// upper bound: p max
 	// - lookup table (experimental results from testing cases [n choose n/2] <= T::max())
 	// - limited this way for performance reasons
-	if (p > bin_coeff_get_max_k<T>())
+	if (p > bin_coeff_get_max_k(size))
 		return 0;
 
 	// save denominator as set of prime factor counts
 	// - purpose: guarding against integer overflow in the denominator
 
 	// determine all primes needed
-	std::vector<std::uint16_t> primes = get_primes(p);
+	std::vector<std::uint16_t> primes = get_primes(static_cast<std::uint16_t>(p));
 
 	// collect prime factor counts for each term in numerator
 	std::vector<T> denom_prime_factor_counts;
@@ -401,7 +374,8 @@ T binomial_coefficient_integral3(T n, T k)
 		--p_temp;
 	}
 
-	// save numerator as tuple of max-size factors: num! = num1*num2*...
+	// save numerator as tuple of max-size factors
+	// n! / (n - p)! = num1*num2*...
 	std::vector<T> num_factors;
 	num_factors.reserve(15);	//heuristic
 
@@ -433,24 +407,27 @@ T binomial_coefficient_integral3(T n, T k)
 	// iterate through numerator factors, reducing them by prime factors in denominator
 	for (std::size_t i_numerator{0}; i_numerator < num_factors.size(); ++i_numerator)
 	{
-		for (std::size_t i_prime{0}; i_prime < denom_prime_factor_counts.size(); ++i_prime)
+		// note: reuse this variable
+		numerator_factor = num_factors[i_numerator];
+
+		for (std::size_t i_primes{0}; i_primes < denom_prime_factor_counts.size(); ++i_primes)
 		{
-			if (num_factors[i_numerator] == 0)
+			if (numerator_factor == 0)
 				break;
 
 			while (true)
 			{
-				if (denom_prime_factor_counts[i_prime] == 0)
+				if (denom_prime_factor_counts[i_primes] == 0)
 					break;
 
-				if (num_factors[i_numerator] == 1)
+				if (numerator_factor == 1)
 					break;
 
 				// if the prime factor divides perfectly, update numerator factor and prime counter
-				if (num_factors[i_numerator] % primes[i_prime] == 0)
+				if (numerator_factor % primes[i_primes] == 0)
 				{
-					num_factors[i_numerator] /= primes[i_prime];
-					--denom_prime_factor_counts[i_prime];
+					numerator_factor /= primes[i_primes];
+					--denom_prime_factor_counts[i_primes];
 				}
 				else
 					break;
@@ -458,11 +435,20 @@ T binomial_coefficient_integral3(T n, T k)
 		}
 
 		// update result with fully reduced numerator factor (composed of only primes not present in prime counters)
-		if (max / num_factors[i_numerator] < result)
+		if (max / numerator_factor < result)
 			return 0;
 		else
-			result *= num_factors[i_numerator];
+			result *= numerator_factor;
 	}
 
 	return result;
+}
+
+template<typename T>
+T binomial_coefficient_integral3(T n, T k)
+{
+	static_assert(std::is_integral<T>::value, "Integral type required (boost::multiprecision not allowed here).");
+	constexpr T max{std::numeric_limits<T>::max()};
+	
+	return binomial_coefficient_integral3_impl<T>(n, k, max, sizeof(T));
 }

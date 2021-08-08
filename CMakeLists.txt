@@ -20,6 +20,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 
 ######################################
+#packages
+
+find_package(Boost 1.58 QUIET)
+
+
+######################################
 #process targets
 
 add_subdirectory(Sources)

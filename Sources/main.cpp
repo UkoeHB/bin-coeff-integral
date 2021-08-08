@@ -5,6 +5,7 @@
 #include "test.h"
 
 //third party headers
+#include "boost/multiprecision/cpp_int.hpp"
 
 //standard headers
 #include <cstdint>
@@ -75,6 +76,14 @@ void get_numerical_limits()
 	while (binomial_coefficient_integral3<std::uint64_t>(n10, n10/2) != 0)
 		++n10;
 	std::cout << "binomial_coefficient_integral3<std::uint64_t>(n,k) -> max n = " << n10 - 1 << '\n';
+
+	// boost::cpp_int
+	using boost::multiprecision::uint512_t;
+	uint512_t limit = (uint512_t{1} << 512) - 1;
+	uint512_t n11{0};
+	while (binomial_coefficient_integral3_impl<uint512_t>(n11, n11/uint512_t{2}, limit, 512/8) != 0)
+		++n11;
+	std::cout << "binomial_coefficient_integral3<uint512_t>(n,k,2^512) -> max n = " << n11 - 1 << '\n';
 }
 
 int main()

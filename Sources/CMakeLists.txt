@@ -11,3 +11,4 @@ add_subdirectory(Utility)
 add_executable(exe ${MAIN_SOURCES})
 
 target_link_libraries(exe PRIVATE Utility)
+target_include_directories(exe PRIVATE ${Boost_INCLUDE_DIRS})
