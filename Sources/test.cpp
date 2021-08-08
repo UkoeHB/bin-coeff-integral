@@ -11,6 +11,28 @@
 #include <cstdint>
 #include <iostream>
 
+void test_gcd()
+{
+	std::cout << "Testing gcd<T>()\n";
+
+	EXCEPTION_ASSERT_MSG(gcd<int>(0,0) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(1,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(0,1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(-1,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(0,-1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(1,1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(-1,-1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(2,1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(1,2) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(2,2) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(-2,-2) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(4,2) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(2,4) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(-4,2) == 2, "test failed");
+
+	EXCEPTION_ASSERT_MSG(gcd<int>(30,3) == 3, "test failed");
+	EXCEPTION_ASSERT_MSG(gcd<int>(300,150) == 150, "test failed");
+}
 
 void test_sqrt_integral()
 {
@@ -126,10 +148,82 @@ void test_binomial_coefficient_integral_slow()
 	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral_slow(200,100) == 0, "test failed");
 }
 
+void test_binomial_coefficient_integral2()
+{
+	std::cout << "Testing binomial_coefficient_integral2<T>()\n";
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(-1,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(-1,0) == 0, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(0,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(0,0) == 1, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(1,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(1,1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(1,2) == 0, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(2,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(2,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(2,1) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(2,2) == 1, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,1) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,2) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,3) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,4) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,5) == 252, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,6) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,7) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,8) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,9) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<int>(10,10) == 1, "test failed");
+
+	// numerical limits exceeded
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<std::uint16_t>(18,9) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral2<std::uint16_t>(200,100) == 0, "test failed");
+}
+
+void test_binomial_coefficient_integral3()
+{
+	std::cout << "Testing binomial_coefficient_integral3<T>()\n";
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(-1,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(-1,0) == 0, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(0,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(0,0) == 1, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(1,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(1,1) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(1,2) == 0, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(2,-1) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(2,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(2,1) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(2,2) == 1, "test failed");
+
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,1) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,2) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,3) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,4) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,5) == 252, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,6) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,7) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,8) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,9) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<int>(10,10) == 1, "test failed");
+
+	// numerical limits exceeded
+	EXCEPTION_ASSERT_MSG(binomial_coefficient_integral3<std::uint16_t>(200,100) == 0, "test failed");
+}
+
 void run_tests()
 {
+	test_gcd();
 	test_sqrt_integral();
 	test_factorial();
 	test_binomial_coefficient_integral_fast();
 	test_binomial_coefficient_integral_slow();
+	test_binomial_coefficient_integral2();
+	test_binomial_coefficient_integral3();
 }

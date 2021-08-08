@@ -10,50 +10,33 @@
 #include <list>
 #include <limits>
 
-std::list<std::uint32_t> prime_factors(std::uint32_t n)
+
+std::vector<std::uint16_t> get_primes(std::uint16_t n)
 {
-	// returns prime factors of input
-	// note: does not return '1' as a prime factor
+    // Eratosthenes sieve
+    std::vector<bool> sieve;
+    std::vector<std::uint16_t> result;
+    sieve.resize(n + 1, false);
+    result.reserve(n/2);
+ 
+    for (std::size_t num{2}; num <= n; num++)
+    {
+        // If false, then it's a prime.
+        if (sieve[num] == false)
+        {
+        	// Set all multiples of num to true
+        	if (num * num <= n)
+        	{
+        		for (std::size_t multiple{num * num}; multiple <= n; multiple += num)
+                	sieve[multiple] = true;
+        	}
 
-	// limited to 4 byte inputs, otherwise worst-case performance is catastrophic
-	using T = std::uint32_t;
+            // save result
+            result.push_back(num);
+        }
+    }
 
-	std::list<T> result;
-
-	// assess input
-	if (n <= 1)
-		return result;
-
-	// get 2s
-	while (n % 2 == 0)
-	{
-		result.emplace_front(2);
-
-		n /= 2;
-	}
-
-	// iterate odd numbers
-	T test{3};
-	T max_test{sqrt_integral<T>(n)};
-
-	for (T test{3}; test <= max_test; test += 2)
-	{
-		while (n % test == 0)
-		{
-			result.emplace_front(test);
-
-			n /= test;
-		}
-
-		max_test = sqrt_integral<T>(n);
-	}
-
-	// if final n is a prime
-	// example: if original n == 6, then this conditional will execute
-	if (n > 1)
-		result.emplace_front(n);
-
-	return result;
+ 	return result;
 }
 
 std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t k)
@@ -97,7 +80,7 @@ std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t 
 
 	while (lower > 1)
 	{
-		denominator_fact.merge(prime_factors(lower));
+		denominator_fact.merge(prime_factors<std::uint32_t>(lower));
 
 		--lower;
 	}
@@ -106,7 +89,7 @@ std::uint32_t binomial_coefficient_integral_slow(std::uint32_t n, std::uint32_t 
 	T ret_val{1};
 	while (upper_a > upper_b)
 	{
-		std::list<T> temp(prime_factors(upper_a));
+		std::list<T> temp(prime_factors<std::uint32_t>(upper_a));
 		auto factor_it{temp.begin()};
 
 		while (factor_it != temp.end())
