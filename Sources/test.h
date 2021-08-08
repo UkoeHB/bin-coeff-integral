@@ -9,11 +9,6 @@
 //standard headers
 
 
-void test_gcd();
 void test_sqrt_integral();
-void test_factorial();
-void test_binomial_coefficient_integral0();
-void test_binomial_coefficient_integral1();
-void test_binomial_coefficient_integral2();
-void test_binomial_coefficient_integral3();
+void test_n_choose_k();
 void run_tests();

@@ -15,48 +15,7 @@
 
 
 std::vector<std::uint16_t> get_primes(std::uint16_t n);
-std::uint32_t binomial_coefficient_integral1(std::uint32_t n, std::uint32_t k);
 std::size_t bin_coeff_get_max_k(std::size_t size);
-
-// thanks to: https://solarianprogrammer.com/2019/10/25/cpp-17-find-gcd-of-two-or-more-integers/
-template <typename T>
-T gcd(T a, T b)
-{
-	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
-
-	// Use the fact that gcd(a, b) = gcd(|a|, |b|)
-	// to cover both positive and negative integers
-	if (a < 0)
-		a = -a;
-
-	if (b < 0)
-		b = -b;
-
-	// Use the fact that gcd(a, b) = gcd(b, a) and gcd(a, 0) = gcd(0, a) = a.
-	// Obs. this covers the case gcd(0, 0) = 0 too
-	if (a == 0)
-		return b;
-
-	if (b == 0)
-		return a;
-
-	// euclidean algorithm
-	T temp;
-
-	while (a > 0)
-	{
-		if (a < b)
-		{
-			temp = a;
-			a = b;
-			b = temp;
-		}
-
-		a = a - b;
-	}
-
-	return b;
-}
 
 template <typename T>
 T sqrt_integral(T n)
@@ -131,178 +90,7 @@ std::list<T> prime_factors(T n)
 }
 
 template<typename T>
-T factorial(T n, T s = 0)
-{
-	// obtains factorial: n! / s!
-	// error: returns 0
-	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
-
-	if (s > n || n < 0 || s < 0)
-		return 0;
-
-	// n! / s!
-	// s as in 'stop'
-	T r{1};
-	while (n > s)
-	{ 
-		if ((std::numeric_limits<T>::max() / r) < n)
-			return 0;
-
-		r *= n;
-		n--;
-	}
-
-	return r;
-}
-
-template<typename T>
-T binomial_coefficient_integral0(T n, T k)
-{
-	// n choose k = n! / (k! * (n - k)!)
-	// error: returns 0
-	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
-
-	if (n < 0 || k < 0 || n < k)
-		return 0;
-	else if (n == k)
-		return 1;
-	else if (k >= n - k)
-	{
-		// (n! / k!) / (n - k)!
-		T numerator{factorial<T>(n - k)};
-		if (numerator == 0)
-			return 0;
-		else
-			return factorial<T>(n, k) / numerator;
-	}
-	else
-	{
-		// (n! / (n - k)!) / k!
-		T numerator{factorial<T>(k)};
-		if (numerator == 0)
-			return 0;
-		else
-			return factorial<T>(n, n - k) / numerator;
-	}
-}
-
-template<typename T>
-T binomial_coefficient_integral2(T n, T k)
-{
-	// n choose k = n! / [k! * (n - k)!]
-	// error: return 0
-	// - n < 0, k < 0, n < k
-	// - result overflows T::max()
-	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
-	constexpr T max{std::numeric_limits<T>::max()};
-
-	// input validation
-	if (n < 0 || k < 0 || n < k)
-		return 0;
-
-	// special cases
-	if (n == 1 || k == 0 || n == k)
-		return 1;
-	else if (k == 1 || k == n - 1)
-		return n;
-
-	// n choose p = (n! / (n - p)!) / p!
-	// - later, will implicitly remove the larger part of denominator from numerator
-	T p;
-	if ((n - k) > k)
-		p = k;
-	else
-		p = n - k;
-
-	// denominator = p!
-	// if denominator exceeds numerical limits, return error
-	// note: result >= denominator ALWAYS
-	T denominator{1};
-	T temp{p};
-
-	while (temp > 1)
-	{ 
-		if ((max / denominator) < temp)
-			return 0;
-
-		denominator *= temp;
-		--temp;
-	}
-
-	// build result
-	// result = (result*denominator + remainder)*[numerator terms] / denominator
-	// - numerator terms = n * (n - 1) * (n - 2) * ... * (n - p + 1)
-	// - iteratively multiply numerator terms onto the parens expression
-	// - if remainder overflows, move it into the 'result' term
-	// - if result overflows, return error
-	// note: when all terms are expanded, expect remainder == 0
-	T result{0};
-	T remainder{1};
-	T num_term{0};
-	while (p > 0)
-	{
-		num_term = (n - p + 1);
-
-		// apply numerator term to 'result' component
-		if ((max / num_term) < result)
-			return 0;
-
-		result *= num_term;
-
-		// apply numerator term to 'remainder' component
-		if ((max / num_term) < remainder)
-		{
-			// remainder*num_term = x*denominator + y; y < denominator
-			// note: x > 0 since max >= denominator
-			// note: this will succeed because num_term*remainder > max >= denominator
-
-			T term_increment{1};
-			T temp_remainder{remainder};
-
-			// remainder*num_term -> remainder + remainder + remainder ...
-			while (term_increment <= num_term - 1)
-			{
-				T a{temp_remainder};
-				T b{remainder};
-
-				// handle overflow
-				while (a + b < b)
-				{
-					// move part of remainder into result 'result' component
-					// The subtracted expression can only overflow if denominator = 1, but this
-					//   code will never execute in that case.
-					// note: '+ 1' accounts for lost quantity on overflow
-					if (max - ((max / denominator) + (a + b + 1) / denominator) < result)
-						return 0;
-
-					result += ((max / denominator) + (a + b + 1) / denominator);
-
-					a = (a + b + 1) % denominator;
-					b = max % denominator;
-				}
-
-				temp_remainder = a + b;
-
-				++term_increment;
-			}
-
-			remainder = temp_remainder;
-		}
-		else
-			remainder *= num_term;
-
-		--p;
-	}
-
-	// expect (debugging): remainder % denominator == 0
-	if (max - (remainder / denominator) < result)
-		return 0;
-	else
-		return result + (remainder / denominator);
-}
-
-template<typename T>
-T binomial_coefficient_integral3_impl(const T n, const T k, const T max, const std::size_t size)
+T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 {
 	// n choose k = n! / [k! * (n - k)!]
 	// error: return 0
@@ -443,10 +231,10 @@ T binomial_coefficient_integral3_impl(const T n, const T k, const T max, const s
 }
 
 template<typename T>
-T binomial_coefficient_integral3(T n, T k)
+T n_choose_k(T n, T k)
 {
 	static_assert(std::is_integral<T>::value, "Integral type required (boost::multiprecision not allowed here).");
 	constexpr T max{std::numeric_limits<T>::max()};
 	
-	return binomial_coefficient_integral3_impl<T>(n, k, max, sizeof(T));
+	return n_choose_k_impl<T>(n, k, max, sizeof(T));
 }
