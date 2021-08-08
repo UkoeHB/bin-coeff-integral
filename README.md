@@ -3,10 +3,10 @@
 Binomial coefficient (`n_choose_k<T>()`) for C++ integral types (built-in and `boost::multiprecision`).
 
 Method:
-	- Factors numerator into large numbers that fit in `T::max()`.
-	- Counts prime factors in denominator.
-	- Reduces numerator terms using denominator prime factors.
-	- Values `n` and `k` are pre-screened for known numerical limit failures. Doing so greatly optimizes the algorithms worst-case performance.
+- Factors numerator into large numbers that fit in `T::max()`.
+- Counts prime factors in denominator.
+- Reduces numerator terms using denominator prime factors.
+- Values `n` and `k` are pre-screened for known numerical limit failures. Doing so greatly optimizes the algorithms worst-case performance.
 
 
 ## Dependencies
