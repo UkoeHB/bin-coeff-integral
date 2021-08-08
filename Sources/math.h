@@ -17,14 +17,14 @@ std::vector<std::uint16_t> get_primes(std::uint16_t n);
 std::uint32_t binomial_coefficient_integral1(std::uint32_t n, std::uint32_t k);
 
 template <typename T>
-T bin_coeff_get_max_k()
+std::size_t bin_coeff_get_max_k()
 {
 	// what is the largest value of (n/2) such that
 	// n choose (n/2) will fit in an integral T{} without overflow?
 	static_assert(std::is_integral<T>::value, "Integral type required.");
 
 	// note: results based on a generic online calculator
-	// https://www.hackmath.net/en/calculator/n-choose-k?n=132&k=66&order=0&repeat=0
+	// https://www.hackmath.net/en/calculator/n-choose-k
 	switch (sizeof(T{}))
 	{
 		case 1:
