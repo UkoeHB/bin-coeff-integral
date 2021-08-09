@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.13)
 #project setup
 
 project(BinCoeffIntegral
-	LANGUAGES CXX)
+    LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 

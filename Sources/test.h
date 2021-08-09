@@ -11,15 +11,15 @@
 
 
 #define TEST(name)  \
-void name()		 	\
-{ 					\
-try 				\
+void name()         \
+{                   \
+try                 \
 
 #define TEST_END()  \
-catch (const std::exception &except)		\
-{											\
-	std::cout << except.what() << '\n';		\
-}											\
-}											\
+catch (const std::exception &except)        \
+{                                           \
+    std::cout << except.what() << '\n';     \
+}                                           \
+}                                           \
 
 void run_tests();

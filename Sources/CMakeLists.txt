@@ -2,9 +2,9 @@
 #create executable
 
 set(TEST_SOURCES
-	math.cpp
-	test.cpp
-	main.cpp)
+    math.cpp
+    test.cpp
+    main.cpp)
 
 add_subdirectory(Utility)
 

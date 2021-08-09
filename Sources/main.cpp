@@ -10,7 +10,7 @@
 
 int main()
 {
-	run_tests();
+    run_tests();
 
-	return 1;
+    return 1;
 }
