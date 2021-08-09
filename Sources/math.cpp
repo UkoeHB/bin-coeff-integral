@@ -7,7 +7,6 @@
 
 //standard headers
 #include <cstdint>
-#include <list>
 
 
 std::size_t bin_coeff_get_max_k(std::size_t size)

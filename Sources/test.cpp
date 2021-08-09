@@ -11,6 +11,7 @@
 //standard headers
 #include <cstdint>
 #include <iostream>
+#include <vector>
 
 
 TEST(test_sqrt_integral)
@@ -67,7 +68,7 @@ TEST(test_prime_factors)
 	std::cout << "Testing prime_factors<T>()\n";
 
 	auto rebuild_num_f{
-			[](const std::list<uint16_t> &primes) -> std::uint16_t
+			[](const std::vector<uint16_t> &primes) -> std::uint16_t
 			{
 				if (primes.size() == 0)
 					return 0;
@@ -87,7 +88,7 @@ TEST(test_prime_factors)
 
 	// prime factors are actually primes
 	std::vector<std::uint16_t> primes_to_150{get_primes_up_to(150)};
-	std::list<std::uint16_t> prime_factors_300{prime_factors<std::uint16_t>(300)};
+	std::vector<std::uint16_t> prime_factors_300{prime_factors<std::uint16_t>(300)};
 
 	for (const auto factor : prime_factors_300)
 		EXCEPTION_ASSERT_MSG(std::find(primes_to_150.begin(), primes_to_150.end(), factor) != primes_to_150.end(), "test failed");

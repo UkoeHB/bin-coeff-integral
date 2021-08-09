@@ -9,7 +9,6 @@
 
 //standard headers
 #include <cstdint>
-#include <list>
 #include <type_traits>
 #include <vector>
 
@@ -44,28 +43,36 @@ T sqrt_integral(T n)
 }
 
 template <typename T>
-std::list<T> prime_factors(T n)
+std::vector<T> prime_factors(T n)
 {
 	// returns prime factors of input
 	// note: does not return '1' as a prime factor unless n == 1
 	// warning: worst-case performance if sizeof(T{}) > 4 can be catastrophic
 	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
-	std::list<T> result;
+	std::vector<T> result;
+
+	// figure max number of prime factors
+	std::size_t count{0};
+
+	while ((T{1} << count) < n)
+		count += 4;
+
+	result.reserve(count + 1);
 
 	// assess input
 	if (n == 0)
 		return result;
 	else if (n == 1)
 	{
-		result.emplace_front(1);
+		result.push_back(1);
 		return result;
 	}
 
 	// get 2s
 	while (n % 2 == 0)
 	{
-		result.emplace_front(2);
+		result.push_back(2);
 
 		n /= 2;
 	}
@@ -78,7 +85,7 @@ std::list<T> prime_factors(T n)
 	{
 		while (n % test == 0)
 		{
-			result.emplace_front(test);
+			result.push_back(test);
 
 			n /= test;
 		}
@@ -89,7 +96,7 @@ std::list<T> prime_factors(T n)
 	// if final n is a prime
 	// example: if original n == 6, then this conditional will execute
 	if (n > 1)
-		result.emplace_front(n);
+		result.push_back(n);
 
 	return result;
 }
@@ -161,7 +168,7 @@ T n_choose_k_impl(const T n, const T k, const T type_max, const std::size_t type
 
 	while (p_temp > 1)
 	{
-		std::list<T> factors = prime_factors<T>(p_temp);
+		std::vector<T> factors = prime_factors<T>(p_temp);
 
 		for (const auto factor : factors)
 		{
