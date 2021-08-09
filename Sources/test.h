@@ -7,8 +7,19 @@
 //third party headers
 
 //standard headers
+#include <iostream>
 
 
-void test_sqrt_integral();
-void test_n_choose_k();
+#define TEST(name)  \
+void name() 		\
+{ 					\
+try 				\
+
+#define TEST_END()  \
+catch (const std::exception &except)		\
+{											\
+	std::cout << except.what() << '\n';		\
+}											\
+}											\
+
 void run_tests();

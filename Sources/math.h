@@ -14,7 +14,7 @@
 #include <vector>
 
 
-std::vector<std::uint16_t> get_primes(std::uint16_t n);
+std::vector<std::uint16_t> get_primes_up_to(std::uint16_t n);
 std::size_t bin_coeff_get_max_k(std::size_t size);
 
 template <typename T>
@@ -47,15 +47,20 @@ template <typename T>
 std::list<T> prime_factors(T n)
 {
 	// returns prime factors of input
-	// note: does not return '1' as a prime factor
+	// note: does not return '1' as a prime factor unless n == 1
 	// warning: worst-case performance if sizeof(T{}) > 4 can be catastrophic
 	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	std::list<T> result;
 
 	// assess input
-	if (n <= 1)
+	if (n == 0)
 		return result;
+	else if (n == 1)
+	{
+		result.emplace_front(1);
+		return result;
+	}
 
 	// get 2s
 	while (n % 2 == 0)
@@ -136,7 +141,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 	// - purpose: guarding against integer overflow in the denominator
 
 	// determine all primes needed
-	std::vector<std::uint16_t> primes = get_primes(static_cast<std::uint16_t>(p));
+	std::vector<std::uint16_t> primes = get_primes_up_to(static_cast<std::uint16_t>(p));
 
 	// collect prime factor counts for each term in numerator
 	std::vector<T> denom_prime_factor_counts;
@@ -162,6 +167,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 
 	// save numerator as tuple of max-size factors
 	// n! / (n - p)! = num1*num2*...
+	// note: this is where the value (n - p)! is implicitly removed from n!
 	std::vector<T> num_factors;
 	num_factors.reserve(15);	//heuristic
 
@@ -193,12 +199,12 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 	// iterate through numerator factors, reducing them by prime factors in denominator
 	for (std::size_t i_numerator{0}; i_numerator < num_factors.size(); ++i_numerator)
 	{
-		// note: reuse this variable
+		// note: reuse this variable from earlier
 		numerator_factor = num_factors[i_numerator];
 
 		for (std::size_t i_primes{0}; i_primes < denom_prime_factor_counts.size(); ++i_primes)
 		{
-			if (numerator_factor == 0)
+			if (numerator_factor == 0 || numerator_factor/2 < primes[i_primes])
 				break;
 
 			while (true)

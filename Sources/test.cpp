@@ -13,7 +13,7 @@
 #include <iostream>
 
 
-void test_sqrt_integral()
+TEST(test_sqrt_integral)
 {
 	std::cout << "Testing sqrt_integral<T>()\n";
 
@@ -31,9 +31,69 @@ void test_sqrt_integral()
 
 	EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint32_t>(10000) == 100, "test failed");
 	EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint32_t>(123456789) == 11111, "test failed");
-}
+} TEST_END()
 
-void test_n_choose_k()
+TEST(test_get_primes_up_to)
+{
+	std::cout << "Testing get_primes_up_to()\n";
+
+	std::vector<std::uint16_t> primes_to_300{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31,
+		37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109,
+		113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197,
+		199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293};
+
+	std::vector<std::uint16_t> primes_to_200_test{get_primes_up_to(200)};
+	std::vector<std::uint16_t> primes_to_300_test{get_primes_up_to(300)};
+	std::vector<std::uint16_t> primes_to_400_test{get_primes_up_to(400)};
+
+	EXCEPTION_ASSERT_MSG(primes_to_300 != primes_to_200_test, "test failed");
+	EXCEPTION_ASSERT_MSG(primes_to_300 == primes_to_300_test, "test failed");
+	EXCEPTION_ASSERT_MSG(primes_to_300 != primes_to_400_test, "test failed");
+
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(0).size() == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(1).size() == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(2).size() == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(2)[0] == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(3).size() == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(3)[0] == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(3)[1] == 3, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(4).size() == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(4)[0] == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(get_primes_up_to(4)[1] == 3, "test failed");
+} TEST_END()
+
+TEST(test_prime_factors)
+{
+	std::cout << "Testing prime_factors<T>()\n";
+
+	auto rebuild_num_f{
+			[](const std::list<uint16_t> &primes) -> std::uint16_t
+			{
+				if (primes.size() == 0)
+					return 0;
+
+				std::uint16_t result{1};
+
+				for (const auto prime : primes)
+					result *= prime;
+
+				return result;
+			}
+		};
+
+	// factorization is complete (can reconstruct original number)
+	for (std::uint16_t i{0}; i < 200; ++i)
+		EXCEPTION_ASSERT_MSG(rebuild_num_f(prime_factors<std::uint16_t>(i)) == i, "test failed");
+
+	// prime factors are actually primes
+	std::vector<std::uint16_t> primes_to_150{get_primes_up_to(150)};
+	std::list<std::uint16_t> prime_factors_300{prime_factors<std::uint16_t>(300)};
+
+	for (const auto factor : prime_factors_300)
+		EXCEPTION_ASSERT_MSG(std::find(primes_to_150.begin(), primes_to_150.end(), factor) != primes_to_150.end(), "test failed");
+} TEST_END()
+
+TEST(test_n_choose_k)
 {
 	std::cout << "Testing n_choose_k<T>()\n";
 
@@ -87,10 +147,12 @@ void test_n_choose_k()
 	EXCEPTION_ASSERT_MSG(b2 == 0, "test failed");
 	EXCEPTION_ASSERT_MSG(c1 != 0, "test failed");
 	EXCEPTION_ASSERT_MSG(c2 == 0, "test failed");
-}
+} TEST_END()
 
 void run_tests()
 {
 	test_sqrt_integral();
+	test_get_primes_up_to();
+	test_prime_factors();
 	test_n_choose_k();
 }

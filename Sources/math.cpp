@@ -8,7 +8,6 @@
 //standard headers
 #include <cstdint>
 #include <list>
-#include <limits>
 
 
 std::size_t bin_coeff_get_max_k(std::size_t size)
@@ -16,7 +15,7 @@ std::size_t bin_coeff_get_max_k(std::size_t size)
 	// what is the largest value of (n/2) such that
 	// n choose (n/2) will fit in an integral T{} without overflow?
 
-	// note: results found by incrementing n until failure
+	// note: results found by incrementing 'n' until failure
 	switch (size)
 	{
 		case 1:
@@ -42,28 +41,30 @@ std::size_t bin_coeff_get_max_k(std::size_t size)
 	return (10 * size);
 }
 
-std::vector<std::uint16_t> get_primes(std::uint16_t n)
+std::vector<std::uint16_t> get_primes_up_to(const std::uint16_t n)
 {
     // Eratosthenes sieve
+    // get all primes in range [2, n]
+    // '1' and '0' not considered primes
     std::vector<bool> sieve;
     std::vector<std::uint16_t> result;
     sieve.resize(n + 1, false);
     result.reserve(n/2);
  
-    for (std::size_t num{2}; num <= n; num++)
+    for (std::size_t i{2}; i <= n; ++i)
     {
         // If false, then it's a prime.
-        if (sieve[num] == false)
+        if (sieve[i] == false)
         {
-        	// Set all multiples of num to true
-        	if (num * num <= n)
+        	// Set all multiples of 'i' to true (i.e. non-prime)
+        	if (i * i <= n)
         	{
-        		for (std::size_t multiple{num * num}; multiple <= n; multiple += num)
-                	sieve[multiple] = true;
+        		for (std::size_t m{i * i}; m <= n; m += i)
+                	sieve[m] = true;
         	}
 
             // save result
-            result.push_back(num);
+            result.push_back(i);
         }
     }
 
