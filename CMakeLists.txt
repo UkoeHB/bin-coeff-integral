@@ -16,7 +16,14 @@ set(CMAKE_CXX_STANDARD 11)
 ######################################
 #config
 
+# binary directory
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# module path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
+
+# set to Release unless otherwise specified
+include(SetDefaultBuildType)
 
 
 ######################################

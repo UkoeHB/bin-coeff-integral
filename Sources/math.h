@@ -95,7 +95,7 @@ std::list<T> prime_factors(T n)
 }
 
 template<typename T>
-T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
+T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, const bool test_limits = false)
 {
 	// n choose k = n! / [k! * (n - k)!]
 	// error: return 0
@@ -134,8 +134,11 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 	// upper bound: p max
 	// - lookup table (experimental results from testing cases [n choose n/2] <= T::max())
 	// - limited this way for performance reasons
-	if (p > bin_coeff_get_max_k(size))
-		return 0;
+	if (!test_limits)
+	{
+		if (p > bin_coeff_get_max_k(size))
+			return 0;
+	}
 
 	// save denominator as set of prime factor counts
 	// - purpose: guarding against integer overflow in the denominator
@@ -237,10 +240,10 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size)
 }
 
 template<typename T>
-T n_choose_k(T n, T k)
+T n_choose_k(T n, T k, const bool test_limits = false)
 {
 	static_assert(std::is_integral<T>::value, "Integral type required (boost::multiprecision not allowed here).");
 	constexpr T max{std::numeric_limits<T>::max()};
 	
-	return n_choose_k_impl<T>(n, k, max, sizeof(T));
+	return n_choose_k_impl<T>(n, k, max, sizeof(T), test_limits);
 }

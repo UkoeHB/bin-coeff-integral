@@ -21,15 +21,14 @@ Method:
 ## Run tests
 
 ```
-cmake -S . -B Build
-cmake --build Build
-./Build/bin/exe
+cmake -S . -B build
+cmake --build build
+./build/bin/test
 ```
 
 
 ## Notes
 
-- May not be performant for ints larger than 64 bytes (as expected).
 - Branch 'old' has some old approaches.
 	- type 0: direct factorials of numerator and denominator, divide them
 	- type 1: full prime factorization of numerator and denominator, cancel common primes until only numerator remains
