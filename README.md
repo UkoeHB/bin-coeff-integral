@@ -4,6 +4,10 @@ Binomial coefficient (`n_choose_k<T>()`) for C++ integral types (built-in and `b
 
 Method:
 1. `n choose k = n! / (k! * (n - k)!)`
+1. Simplify by rearranging:
+	1. `p = min(k, n - k)`
+	1. `numerator = n! / (n - p)!`
+	1. `denominator = p!`
 1. Factor numerator into large numbers that barely fit in `T::max()`.
 1. Count the appearances of each of the denominator's prime factors.
 1. Reduce the numerator terms using the denominator's prime factors.
