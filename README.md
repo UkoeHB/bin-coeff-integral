@@ -3,10 +3,11 @@
 Binomial coefficient (`n_choose_k<T>()`) for C++ integral types (built-in and `boost::multiprecision`).
 
 Method:
+1. `n choose k = n! / (k! * (n - k)!)`
 1. Factor numerator into large numbers that barely fit in `T::max()`.
-2. Count the appearances of each of the denominator's prime factors.
-3. Reduce the numerator terms using the denominator's prime factors.
-4. When all numerator terms have been reduced as much as possible, multiply them together into the final result.
+1. Count the appearances of each of the denominator's prime factors.
+1. Reduce the numerator terms using the denominator's prime factors.
+1. When all numerator terms have been reduced as much as possible, multiply them together into the final result.
 
 **Note**: Values `n` and `k` are pre-screened for known numerical limit failures. Doing so greatly optimizes the algorithm's worst-case performance.
 

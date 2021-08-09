@@ -95,12 +95,13 @@ std::list<T> prime_factors(T n)
 }
 
 template<typename T>
-T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, const bool test_limits = false)
+T n_choose_k_impl(const T n, const T k, const T type_max, const std::size_t type_size, const bool testing = false)
 {
-	// n choose k = n! / [k! * (n - k)!]
+	// binomial coefficient: n choose k = n! / [k! * (n - k)!]
 	// error: return 0
 	// - n < 0, k < 0, n < k
-	// - result overflows T::max()
+	// - min(k, n - k) > 2^16 - 1 = 65535
+	// - result > T::max()
 	static_assert(std::is_integral<T>::value || is_multiprecision_int<T>::value, "Integral type required.");
 
 	// input validation
@@ -114,7 +115,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 		return n;
 
 	// n choose p = (n! / (n - p)!) / p!
-	// - later, will implicitly remove (n - p)! from the numerator
+	// - later, (n - p)! will be implicitly removed from the numerator
 	// - p <= n/2
 	T p;
 	if ((n - k) > k)
@@ -124,7 +125,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 
 	// upper bound: n max
 	// - n choose 2 = n*(n-1)/2
-	// - if [n choose 2] will overflow, then n is definitely too big
+	// - if [n choose 2] overflows, then [n choose p, p >= 2] will overflow
 	// - limited this way for performance reasons
 	if (n % 2 && (n / 2) * (n - 1) < (n / 2))
 		return 0;
@@ -133,10 +134,12 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 
 	// upper bound: p max
 	// - lookup table (experimental results from testing cases [n choose n/2] <= T::max())
+	// - [n choose (n/2)] is the max result in the 'n' series,
+	//   so if (n'/2 = p) is too big, then [n choose p] will overflow
 	// - limited this way for performance reasons
-	if (!test_limits)
+	if (!testing)
 	{
-		if (p > bin_coeff_get_max_k(size))
+		if (p > bin_coeff_get_max_k(type_size))
 			return 0;
 	}
 
@@ -144,15 +147,19 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 	// - purpose: guarding against integer overflow in the denominator
 
 	// determine all primes needed
+	if (p > std::numeric_limits<std::uint16_t>::max())
+		return 0;
+
 	std::vector<std::uint16_t> primes = get_primes_up_to(static_cast<std::uint16_t>(p));
 
-	// collect prime factor counts for each term in numerator
+	// collect prime factor counts for each term in denominator
+	// p! -> prime_factors(p), prime_factors(p - 1), ...
 	std::vector<T> denom_prime_factor_counts;
 	denom_prime_factor_counts.resize(primes.size());
 
 	T p_temp{p};
 
-	while (p_temp > 0)
+	while (p_temp > 1)
 	{
 		std::list<T> factors = prime_factors<T>(p_temp);
 
@@ -170,7 +177,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 
 	// save numerator as tuple of max-size factors
 	// n! / (n - p)! = num1*num2*...
-	// note: this is where the value (n - p)! is implicitly removed from n!
+	// note: this is where the value '(n - p)!' is implicitly removed from 'n!'
 	std::vector<T> num_factors;
 	num_factors.reserve(15);	//heuristic
 
@@ -179,10 +186,11 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 
 	while (p > 0)
 	{
+		// n! / (n - p)! = [n - p + 1] * [n - (p-1) + 1] * ... * [n - 1 + 1]
 		numerator_factor = n - p + 1;
 
 		// if factor will overflow, push it into vector
-		if (max / num_temp < numerator_factor)
+		if (type_max / num_temp < numerator_factor)
 		{
 			num_factors.push_back(num_temp);
 			num_temp = 1;
@@ -199,7 +207,7 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 	// build result
 	T result{1};
 
-	// iterate through numerator factors, reducing them by prime factors in denominator
+	// iterate through big numerator factors, reducing them by prime factors in denominator
 	for (std::size_t i_numerator{0}; i_numerator < num_factors.size(); ++i_numerator)
 	{
 		// note: reuse this variable from earlier
@@ -207,15 +215,13 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 
 		for (std::size_t i_primes{0}; i_primes < denom_prime_factor_counts.size(); ++i_primes)
 		{
-			if (numerator_factor == 0 || numerator_factor/2 < primes[i_primes])
+			// leave if no more numerator primes can be removed
+			if (numerator_factor < primes[i_primes])
 				break;
 
 			while (true)
 			{
 				if (denom_prime_factor_counts[i_primes] == 0)
-					break;
-
-				if (numerator_factor == 1)
 					break;
 
 				// if the prime factor divides perfectly, update numerator factor and prime counter
@@ -230,20 +236,31 @@ T n_choose_k_impl(const T n, const T k, const T max, const std::size_t size, con
 		}
 
 		// update result with fully reduced numerator factor (composed of only primes not present in prime counters)
-		if (max / numerator_factor < result)
+		if (type_max / numerator_factor < result)
 			return 0;
 		else
 			result *= numerator_factor;
+	}
+
+	// numerator should have no remaining prime factors
+	if (testing)
+	{
+		for (const auto count : denom_prime_factor_counts)
+		{
+			if (count)
+				return 0;
+		}
 	}
 
 	return result;
 }
 
 template<typename T>
-T n_choose_k(T n, T k, const bool test_limits = false)
+T n_choose_k(T n, T k, const bool testing = false)
 {
+	// wrapper for n_choose_k that supports built-in types
 	static_assert(std::is_integral<T>::value, "Integral type required (boost::multiprecision not allowed here).");
-	constexpr T max{std::numeric_limits<T>::max()};
+	constexpr T type_max{std::numeric_limits<T>::max()};
 	
-	return n_choose_k_impl<T>(n, k, max, sizeof(T), test_limits);
+	return n_choose_k_impl<T>(n, k, type_max, sizeof(T), testing);
 }

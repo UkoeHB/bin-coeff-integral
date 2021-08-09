@@ -97,49 +97,49 @@ TEST(test_n_choose_k)
 {
 	std::cout << "Testing n_choose_k<T>()\n";
 
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(-1,-1) == 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(-1,0) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(-1,-1, true) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(-1,0, true) == 0, "test failed");
 
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(0,-1) == 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(0,0) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(0,-1, true) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(0,0, true) == 1, "test failed");
 
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,0) == 1, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,1) == 1, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,2) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,0, true) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,1, true) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(1,2, true) == 0, "test failed");
 
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,-1) == 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,0) == 1, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,1) == 2, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,2) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,-1, true) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,0, true) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,1, true) == 2, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(2,2, true) == 1, "test failed");
 
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,1) == 10, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,2) == 45, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,3) == 120, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,4) == 210, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,5) == 252, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,6) == 210, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,7) == 120, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,8) == 45, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,9) == 10, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,10) == 1, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,1, true) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,2, true) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,3, true) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,4, true) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,5, true) == 252, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,6, true) == 210, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,7, true) == 120, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,8, true) == 45, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,9, true) == 10, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,10, true) == 1, "test failed");
 
 	// numerical limits
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(18,9) != 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(19,9) == 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(34,17) != 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(35,17) == 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(67,33) != 0, "test failed");
-	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(68,34) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(18,9, true) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(19,9, true) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(34,17, true) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(35,17, true) == 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(67,33, true) != 0, "test failed");
+	EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(68,34, true) == 0, "test failed");
 
 	using boost::multiprecision::uint128_t;
 	using boost::multiprecision::uint256_t;
 	using boost::multiprecision::uint512_t;
-	uint128_t a1 = n_choose_k_impl<uint128_t>(131, 65, std::numeric_limits<uint128_t>::max(), 128/8);
-	uint128_t a2 = n_choose_k_impl<uint128_t>(132, 66, std::numeric_limits<uint128_t>::max(), 128/8);
-	uint256_t b1 = n_choose_k_impl<uint256_t>(260, 130, std::numeric_limits<uint256_t>::max(), 256/8);
-	uint256_t b2 = n_choose_k_impl<uint256_t>(261, 130, std::numeric_limits<uint256_t>::max(), 256/8);
-	uint512_t c1 = n_choose_k_impl<uint512_t>(516, 258, std::numeric_limits<uint512_t>::max(), 512/8);
-	uint512_t c2 = n_choose_k_impl<uint512_t>(517, 258, std::numeric_limits<uint512_t>::max(), 512/8);
+	uint128_t a1 = n_choose_k_impl<uint128_t>(131, 65, std::numeric_limits<uint128_t>::max(), 128/8, true);
+	uint128_t a2 = n_choose_k_impl<uint128_t>(132, 66, std::numeric_limits<uint128_t>::max(), 128/8, true);
+	uint256_t b1 = n_choose_k_impl<uint256_t>(260, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
+	uint256_t b2 = n_choose_k_impl<uint256_t>(261, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
+	uint512_t c1 = n_choose_k_impl<uint512_t>(516, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
+	uint512_t c2 = n_choose_k_impl<uint512_t>(517, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
 
 	EXCEPTION_ASSERT_MSG(a1 != 0, "test failed");
 	EXCEPTION_ASSERT_MSG(a2 == 0, "test failed");
@@ -147,6 +147,12 @@ TEST(test_n_choose_k)
 	EXCEPTION_ASSERT_MSG(b2 == 0, "test failed");
 	EXCEPTION_ASSERT_MSG(c1 != 0, "test failed");
 	EXCEPTION_ASSERT_MSG(c2 == 0, "test failed");
+
+	// maximum input value exceeded
+	using boost::multiprecision::cpp_int;
+	cpp_int limit = (cpp_int{1} << std::size_t{80000}) - 1;
+	cpp_int x = n_choose_k_impl<cpp_int>(cpp_int{200000}, cpp_int{100000}, limit, std::size_t{10000}, true);
+	EXCEPTION_ASSERT_MSG(x == 0, "test failed");
 } TEST_END()
 
 TEST(test_bincoeff_numerical_limits)
