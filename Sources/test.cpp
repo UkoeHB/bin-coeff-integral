@@ -239,63 +239,10 @@ TEST(test_n_choose_k)
     EXCEPTION_ASSERT_MSG(x == 0, "test failed");
 } TEST_END()
 
-TEST(test_bincoeff_numerical_limits)
-{
-    std::cout << "Testing numerical limits of n_choose_k" << '\n';
-
-    // built-in unsigned integral types
-    // unsigned char
-    unsigned char lim8 = numerical_limit_max_k<unsigned char>(sizeof(unsigned char), std::numeric_limits<unsigned char>::max());
-    EXCEPTION_ASSERT_MSG(lim8 == bin_coeff_get_max_k(sizeof(unsigned char)), "test failed");
-
-    // std::uint16_t
-    std::uint16_t lim16 = numerical_limit_max_k<std::uint16_t>(sizeof(std::uint16_t), std::numeric_limits<std::uint16_t>::max());
-    EXCEPTION_ASSERT_MSG(lim16 == bin_coeff_get_max_k(sizeof(std::uint16_t)), "test failed");
-
-    // std::uint32_t
-    std::uint32_t lim32 = numerical_limit_max_k<std::uint32_t>(sizeof(std::uint32_t), std::numeric_limits<std::uint32_t>::max());
-    EXCEPTION_ASSERT_MSG(lim32 == bin_coeff_get_max_k(sizeof(std::uint32_t)), "test failed");
-
-    // std::uint64_t
-    std::uint64_t lim64 = numerical_limit_max_k<std::uint64_t>(sizeof(std::uint64_t), std::numeric_limits<std::uint64_t>::max());
-    EXCEPTION_ASSERT_MSG(lim64 == bin_coeff_get_max_k(sizeof(std::uint64_t)), "test failed");
-
-
-    // boost::multiprecision integers
-    using boost::multiprecision::uint128_t;
-    using boost::multiprecision::uint256_t;
-    using boost::multiprecision::uint512_t;
-    using boost::multiprecision::cpp_int;
-
-    // uint128_t
-    uint128_t lim128 = numerical_limit_max_k<uint128_t>(128/8, std::numeric_limits<uint128_t>::max());
-    EXCEPTION_ASSERT_MSG(lim128 == bin_coeff_get_max_k(128/8), "test failed");
-
-    // uint256_t
-    uint256_t lim256 = numerical_limit_max_k<uint256_t>(256/8, std::numeric_limits<uint256_t>::max());
-    EXCEPTION_ASSERT_MSG(lim256 == bin_coeff_get_max_k(256/8), "test failed");
-
-    // uint512_t
-    uint512_t lim512 = numerical_limit_max_k<uint512_t>(512/8, std::numeric_limits<uint512_t>::max());
-    EXCEPTION_ASSERT_MSG(lim512 == bin_coeff_get_max_k(512/8), "test failed");
-
-    // cpp_int: 300 bits
-    cpp_int limit;
-    limit = (cpp_int{1} << 300) - 1;
-    cpp_int lim300 = numerical_limit_max_k<cpp_int>(300/8 + (300 % 8 ? 1 : 0), limit);
-    EXCEPTION_ASSERT_MSG(lim300 < bin_coeff_get_max_k(300/8 + (300 % 8 ? 1 : 0)), "test failed");
-
-    // cpp_int: 600 bits
-    limit = (cpp_int{1} << 600) - 1;
-    cpp_int lim600 = numerical_limit_max_k<cpp_int>(600/8 + (600 % 8 ? 1 : 0), limit);
-    EXCEPTION_ASSERT_MSG(lim600 < bin_coeff_get_max_k(600/8 + (600 % 8 ? 1 : 0)), "test failed");
-} TEST_END()
-
 void run_tests()
 {
     test_sqrt_integral();
     test_get_primes_up_to();
     test_prime_factors();
     test_n_choose_k();
-    //test_bincoeff_numerical_limits();
 }
