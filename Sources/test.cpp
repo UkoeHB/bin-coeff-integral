@@ -228,7 +228,7 @@ TEST(test_n_choose_k)
     // test that bin_coeff_get_max_k() returns a value k such that k + 1 will fail
     cpp_int limit600 = (cpp_int{1} << 600) - 1;
     std::size_t max_expected_k = bin_coeff_get_max_k(600/8 + (600 % 8 ? 1 : 0));
-    cpp_int r = n_choose_k_impl<uint512_t>((max_expected_k + 1)*2, (max_expected_k + 1), limit600, 600/8 + (600 % 8 ? 1 : 0), true);
+    cpp_int r = n_choose_k_impl<cpp_int>((max_expected_k + 1)*2, (max_expected_k + 1), limit600, 600/8 + (600 % 8 ? 1 : 0), true);
     EXCEPTION_ASSERT_MSG(r == 0, "test failed");
 
 

@@ -3,10 +3,8 @@
 #pragma once
 
 //local headers
-#include "math.h"
 
 //third party headers
-#include "boost/multiprecision/cpp_int.hpp"
 
 //standard headers
 #include <iostream>
