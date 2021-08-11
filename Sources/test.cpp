@@ -14,6 +14,32 @@
 #include <vector>
 
 
+TEST(test_get_mid)
+{
+    std::cout << "Testing get_mid<T>()\n";
+
+    EXCEPTION_ASSERT_MSG(get_mid<int>(-1,-1) == -1, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(-1,0) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(0,-1) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(1,0) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(0,1) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(1,1) == 1, "test failed");
+
+    EXCEPTION_ASSERT_MSG(get_mid<int>(-4,-2) == -3, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(4,2) == 3, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<int>(5,2) == 3, "test failed");
+
+    EXCEPTION_ASSERT_MSG(get_mid<double>(5.0,2.0) < 3.51, "test failed");
+    EXCEPTION_ASSERT_MSG(get_mid<double>(5.0,2.0) > 3.49, "test failed");
+
+    // overflow test
+    EXCEPTION_ASSERT_MSG(get_mid<std::uint32_t>(
+        std::numeric_limits<std::uint32_t>::max(),
+        std::numeric_limits<std::uint32_t>::max() - 2) ==
+        std::numeric_limits<std::uint32_t>::max() - 1,
+        "test failed");
+} TEST_END()
+
 TEST(test_sqrt_integral)
 {
     std::cout << "Testing sqrt_integral<T>()\n";
@@ -244,6 +270,7 @@ TEST(test_n_choose_k)
 
 void run_tests()
 {
+    test_get_mid();
     test_sqrt_integral();
     test_get_primes_up_to();
     test_prime_factors();

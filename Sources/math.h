@@ -17,7 +17,7 @@ std::vector<std::uint16_t> get_primes_up_to(std::uint16_t n);
 std::size_t bin_coeff_get_max_k(std::size_t size);
 
 template <typename T>
-T get_mid(const T &a, const T &b)
+T get_mid(const T a, const T b)
 {
     //returns the average of two numbers; overflow safe and works with at least all integral and floating point types
     //(a+b)/2 = (a/2) + (b/2) + ((a - 2*(a/2)) + (b - 2*(b/2)))/2
@@ -25,7 +25,7 @@ T get_mid(const T &a, const T &b)
 }
 
 template <typename T>
-T sqrt_integral(T n)
+T sqrt_integral(const T n)
 {
     // returns closest integer <= sqrt(n)
     // error: returns 0
