@@ -125,29 +125,112 @@ TEST(test_n_choose_k)
     EXCEPTION_ASSERT_MSG(n_choose_k<int>(10,10, true) == 1, "test failed");
 
     // numerical limits
+    using boost::multiprecision::cpp_int;
+    cpp_int bigint_limit = (cpp_int{1} << 650) - 1;
+    std::size_t bigint_size = 650/8 + (650 % 8 ? 1 : 0);
+    cpp_int bigint;
+
+    // std::uint16_t
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(18,9, true) != 0, "test failed");
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint16_t>(19,9, true) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(sizeof(std::uint16_t)) == 9, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(18, 9, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<std::uint16_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(19, 9, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<std::uint16_t>::max(), "test failed");
+
+
+    // std::uint32_t
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(34,17, true) != 0, "test failed");
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint32_t>(35,17, true) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(sizeof(std::uint32_t)) == 17, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(34, 17, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<std::uint32_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(35, 17, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<std::uint32_t>::max(), "test failed");
+
+
+    // std::uint64_t
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(67,33, true) != 0, "test failed");
     EXCEPTION_ASSERT_MSG(n_choose_k<std::uint64_t>(68,34, true) == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(sizeof(std::uint64_t)) == 33, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(67, 33, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<std::uint64_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(68, 34, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<std::uint64_t>::max(), "test failed");
+
 
     using boost::multiprecision::uint128_t;
     using boost::multiprecision::uint256_t;
     using boost::multiprecision::uint512_t;
+
+    // uint128_t
     uint128_t a1 = n_choose_k_impl<uint128_t>(131, 65, std::numeric_limits<uint128_t>::max(), 128/8, true);
     uint128_t a2 = n_choose_k_impl<uint128_t>(132, 66, std::numeric_limits<uint128_t>::max(), 128/8, true);
-    uint256_t b1 = n_choose_k_impl<uint256_t>(260, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
-    uint256_t b2 = n_choose_k_impl<uint256_t>(261, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
-    uint512_t c1 = n_choose_k_impl<uint512_t>(516, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
-    uint512_t c2 = n_choose_k_impl<uint512_t>(517, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
-
     EXCEPTION_ASSERT_MSG(a1 != 0, "test failed");
     EXCEPTION_ASSERT_MSG(a2 == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(128/8) == 65, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(131, 65, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<uint128_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(132, 66, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<uint128_t>::max(), "test failed");
+
+
+    // uint256_t
+    uint256_t b1 = n_choose_k_impl<uint256_t>(260, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
+    uint256_t b2 = n_choose_k_impl<uint256_t>(261, 130, std::numeric_limits<uint256_t>::max(), 256/8, true);
     EXCEPTION_ASSERT_MSG(b1 != 0, "test failed");
     EXCEPTION_ASSERT_MSG(b2 == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(256/8) == 130, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(260, 130, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<uint256_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(261, 130, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<uint256_t>::max(), "test failed");
+
+
+    // uint512_t
+    uint512_t c1 = n_choose_k_impl<uint512_t>(516, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
+    uint512_t c2 = n_choose_k_impl<uint512_t>(517, 258, std::numeric_limits<uint512_t>::max(), 512/8, true);
     EXCEPTION_ASSERT_MSG(c1 != 0, "test failed");
     EXCEPTION_ASSERT_MSG(c2 == 0, "test failed");
+    EXCEPTION_ASSERT_MSG(bin_coeff_get_max_k(512/8) == 258, "test failed");
+
+    // valid 'n' is below max size
+    bigint = n_choose_k_impl<cpp_int>(516, 258, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint <= std::numeric_limits<uint512_t>::max(), "test failed");
+
+    // invalid 'n' is above max size
+    bigint = n_choose_k_impl<cpp_int>(517, 258, bigint_limit, bigint_size, true);
+    EXCEPTION_ASSERT_MSG(bigint > std::numeric_limits<uint512_t>::max(), "test failed");
+
+
+    // cpp_int with 600 bits
+    // test that bin_coeff_get_max_k() returns a value k such that k + 1 will fail
+    cpp_int limit600 = (cpp_int{1} << 600) - 1;
+    std::size_t max_expected_k = bin_coeff_get_max_k(600/8 + (600 % 8 ? 1 : 0));
+    cpp_int r = n_choose_k_impl<uint512_t>((max_expected_k + 1)*2, (max_expected_k + 1), limit600, 600/8 + (600 % 8 ? 1 : 0), true);
+    EXCEPTION_ASSERT_MSG(r == 0, "test failed");
+
 
     // maximum input value exceeded
     using boost::multiprecision::cpp_int;
@@ -162,28 +245,20 @@ TEST(test_bincoeff_numerical_limits)
 
     // built-in unsigned integral types
     // unsigned char
-    unsigned char lim8{0};
-    while (n_choose_k<unsigned char>(lim8, lim8/2, true) != 0)
-        ++lim8;
-    EXCEPTION_ASSERT_MSG((lim8 - 1)/2 == bin_coeff_get_max_k(sizeof(unsigned char)), "test failed");
+    unsigned char lim8 = numerical_limit_max_k<unsigned char>(sizeof(unsigned char), std::numeric_limits<unsigned char>::max());
+    EXCEPTION_ASSERT_MSG(lim8 == bin_coeff_get_max_k(sizeof(unsigned char)), "test failed");
 
     // std::uint16_t
-    std::uint16_t lim16{0};
-    while (n_choose_k<std::uint16_t>(lim16, lim16/2, true) != 0)
-        ++lim16;
-    EXCEPTION_ASSERT_MSG((lim16 - 1)/2 == bin_coeff_get_max_k(sizeof(std::uint16_t)), "test failed");
+    std::uint16_t lim16 = numerical_limit_max_k<std::uint16_t>(sizeof(std::uint16_t), std::numeric_limits<std::uint16_t>::max());
+    EXCEPTION_ASSERT_MSG(lim16 == bin_coeff_get_max_k(sizeof(std::uint16_t)), "test failed");
 
     // std::uint32_t
-    std::uint32_t lim32{0};
-    while (n_choose_k<std::uint32_t>(lim32, lim32/2, true) != 0)
-        ++lim32;
-    EXCEPTION_ASSERT_MSG((lim32 - 1)/2 == bin_coeff_get_max_k(sizeof(std::uint32_t)), "test failed");
+    std::uint32_t lim32 = numerical_limit_max_k<std::uint32_t>(sizeof(std::uint32_t), std::numeric_limits<std::uint32_t>::max());
+    EXCEPTION_ASSERT_MSG(lim32 == bin_coeff_get_max_k(sizeof(std::uint32_t)), "test failed");
 
     // std::uint64_t
-    std::uint64_t lim64{0};
-    while (n_choose_k<std::uint64_t>(lim64, lim64/2, true) != 0)
-        ++lim64;
-    EXCEPTION_ASSERT_MSG((lim64 - 1)/2 == bin_coeff_get_max_k(sizeof(std::uint64_t)), "test failed");
+    std::uint64_t lim64 = numerical_limit_max_k<std::uint64_t>(sizeof(std::uint64_t), std::numeric_limits<std::uint64_t>::max());
+    EXCEPTION_ASSERT_MSG(lim64 == bin_coeff_get_max_k(sizeof(std::uint64_t)), "test failed");
 
 
     // boost::multiprecision integers
@@ -193,37 +268,27 @@ TEST(test_bincoeff_numerical_limits)
     using boost::multiprecision::cpp_int;
 
     // uint128_t
-    uint128_t lim128{0};
-    while (n_choose_k_impl<uint128_t>(lim128, lim128/uint128_t{2}, std::numeric_limits<uint128_t>::max(), 128/8, true) != 0)
-        ++lim128;
-    EXCEPTION_ASSERT_MSG((lim128 - 1)/2 == bin_coeff_get_max_k(128/8), "test failed");
+    uint128_t lim128 = numerical_limit_max_k<uint128_t>(128/8, std::numeric_limits<uint128_t>::max());
+    EXCEPTION_ASSERT_MSG(lim128 == bin_coeff_get_max_k(128/8), "test failed");
 
     // uint256_t
-    uint256_t lim256{0};
-    while (n_choose_k_impl<uint256_t>(lim256, lim256/uint256_t{2}, std::numeric_limits<uint256_t>::max(), 256/8, true) != 0)
-        ++lim256;
-    EXCEPTION_ASSERT_MSG((lim256 - 1)/2 == bin_coeff_get_max_k(256/8), "test failed");
+    uint256_t lim256 = numerical_limit_max_k<uint256_t>(256/8, std::numeric_limits<uint256_t>::max());
+    EXCEPTION_ASSERT_MSG(lim256 == bin_coeff_get_max_k(256/8), "test failed");
 
     // uint512_t
-    uint512_t lim512{0};
-    while (n_choose_k_impl<uint512_t>(lim512, lim512/uint512_t{2}, std::numeric_limits<uint512_t>::max(), 512/8, true) != 0)
-        ++lim512;
-    EXCEPTION_ASSERT_MSG((lim512 - 1)/2 == bin_coeff_get_max_k(512/8), "test failed");
+    uint512_t lim512 = numerical_limit_max_k<uint512_t>(512/8, std::numeric_limits<uint512_t>::max());
+    EXCEPTION_ASSERT_MSG(lim512 == bin_coeff_get_max_k(512/8), "test failed");
 
     // cpp_int: 300 bits
     cpp_int limit;
     limit = (cpp_int{1} << 300) - 1;
-    cpp_int lim300{0};
-    while (n_choose_k_impl<cpp_int>(lim300, lim300/cpp_int{2}, limit, 300/8 + (300 % 8 ? 1 : 0), true) != 0)
-        ++lim300;
-    EXCEPTION_ASSERT_MSG((lim300 - 1)/2 < bin_coeff_get_max_k(300/8), "test failed");
+    cpp_int lim300 = numerical_limit_max_k<cpp_int>(300/8 + (300 % 8 ? 1 : 0), limit);
+    EXCEPTION_ASSERT_MSG(lim300 < bin_coeff_get_max_k(300/8 + (300 % 8 ? 1 : 0)), "test failed");
 
     // cpp_int: 600 bits
     limit = (cpp_int{1} << 600) - 1;
-    cpp_int lim600{0};
-    while (n_choose_k_impl<cpp_int>(lim600, lim600/cpp_int{2}, limit, 600/8 + (600 % 8 ? 1 : 0), true) != 0)
-        ++lim600;
-    EXCEPTION_ASSERT_MSG((lim600 - 1)/2 < bin_coeff_get_max_k(600/8), "test failed");
+    cpp_int lim600 = numerical_limit_max_k<cpp_int>(600/8 + (600 % 8 ? 1 : 0), limit);
+    EXCEPTION_ASSERT_MSG(lim600 < bin_coeff_get_max_k(600/8 + (600 % 8 ? 1 : 0)), "test failed");
 } TEST_END()
 
 void run_tests()
@@ -232,5 +297,5 @@ void run_tests()
     test_get_primes_up_to();
     test_prime_factors();
     test_n_choose_k();
-    test_bincoeff_numerical_limits();
+    //test_bincoeff_numerical_limits();
 }
