@@ -32,6 +32,9 @@ TEST(test_sqrt_integral)
 
     EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint32_t>(10000) == 100, "test failed");
     EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint32_t>(123456789) == 11111, "test failed");
+
+    EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint16_t>(65535) == 255, "test failed");
+    EXCEPTION_ASSERT_MSG(sqrt_integral<std::uint32_t>(4294967295ul) == 65535, "test failed");
 } TEST_END()
 
 TEST(test_get_primes_up_to)
