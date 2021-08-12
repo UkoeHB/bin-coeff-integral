@@ -4,8 +4,10 @@
 #include "math.h"
 
 //third party headers
+#include <boost/math/special_functions/binomial.hpp>
 
 //standard headers
+#include <cmath>
 #include <cstdint>
 
 
@@ -69,3 +71,20 @@ std::vector<std::uint16_t> get_primes_up_to(const std::uint16_t n)
 
     return result;
 }
+
+std::int32_t n_choose_k_bwrap(const std::uint32_t n, const std::uint32_t k)
+{
+    if (k > n)
+        return 0;
+
+    double fp_result = boost::math::binomial_coefficient<double>(n, k);
+
+    if (fp_result < 0)
+        return 0;
+
+    if (fp_result > std::numeric_limits<std::int32_t>::max())
+        return 0;
+
+    return std::round(fp_result);
+}
+

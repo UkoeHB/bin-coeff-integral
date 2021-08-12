@@ -6,6 +6,7 @@
 #include "test.h"
 
 //third party headers
+#include <boost/math/special_functions/binomial.hpp>
 #include "boost/multiprecision/cpp_int.hpp"
 
 //standard headers
@@ -268,6 +269,42 @@ TEST(test_n_choose_k)
     EXCEPTION_ASSERT_MSG(x == 0, "test failed");
 } TEST_END()
 
+TEST(test_n_choose_k_bwrap)
+{
+    std::cout << "Testing n_choose_k_bwrap()\n";
+
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(0,0) == 1, "test failed");
+
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(1,0) == 1, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(1,1) == 1, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(1,2) == 0, "test failed");
+
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(2,0) == 1, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(2,1) == 2, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(2,2) == 1, "test failed");
+
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,1) == 10, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,2) == 45, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,3) == 120, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,4) == 210, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,5) == 252, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,6) == 210, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,7) == 120, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,8) == 45, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,9) == 10, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(10,10) == 1, "test failed");
+
+    // numerical limits
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(33,16) != 0, "test failed");
+    EXCEPTION_ASSERT_MSG(n_choose_k_bwrap(34,16) == 0, "test failed");
+
+    double fp_result_good = boost::math::binomial_coefficient<double>(33, 16);
+    double fp_result_overflow = boost::math::binomial_coefficient<double>(34, 16);
+
+    EXCEPTION_ASSERT_MSG(fp_result_good <= std::numeric_limits<std::int32_t>::max(), "test failed");
+    EXCEPTION_ASSERT_MSG(fp_result_overflow > std::numeric_limits<std::int32_t>::max(), "test failed");
+} TEST_END()
+
 void run_tests()
 {
     test_get_mid();
@@ -275,4 +312,5 @@ void run_tests()
     test_get_primes_up_to();
     test_prime_factors();
     test_n_choose_k();
+    test_n_choose_k_bwrap();
 }

@@ -13,8 +13,11 @@
 #include <vector>
 
 
-std::vector<std::uint16_t> get_primes_up_to(std::uint16_t n);
 std::size_t bin_coeff_get_max_k(std::size_t size);
+std::vector<std::uint16_t> get_primes_up_to(std::uint16_t n);
+
+// wrapper around boost's binomial_coefficient
+std::int32_t n_choose_k_bwrap(const std::uint32_t n, const std::uint32_t k);
 
 template <typename T>
 T get_mid(const T a, const T b)
@@ -279,3 +282,4 @@ T n_choose_k(T n, T k, const bool testing = false)
     
     return n_choose_k_impl<T>(n, k, type_max, sizeof(T), testing);
 }
+
