@@ -77,9 +77,15 @@ std::int32_t n_choose_k_bwrap(const std::uint32_t n, const std::uint32_t k)
     if (k > n)
         return 0;
 
-    double fp_result = boost::math::binomial_coefficient<double>(n, k);
+    // note: result is 'double::max()' aka 'infinity' if any error occurs
+    using namespace boost::math::policies;
+    double fp_result = boost::math::binomial_coefficient<double>(n, k,
+      make_policy(overflow_error<ignore_error>(),
+        evaluation_error<ignore_error>(),
+        domain_error<ignore_error>(),
+        pole_error<ignore_error>()));
 
-    if (fp_result < 0)
+    if (fp_result < 0 || fp_result == std::numeric_limits<double>::infinity())
         return 0;
 
     if (fp_result > std::numeric_limits<std::int32_t>::max())
